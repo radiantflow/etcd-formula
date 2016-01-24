@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # vim: ft=yaml
 
-{% from "etcd/map.jinja" import etcd_settings with context -%}
+{% from "etcd/map.jinja" import etcd_settings,systemd with context -%}
 
 {% set etcd_name = "etcd-v" + etcd_settings.install.version + "-linux-amd64" -%}
 {% set etcd_archive_name = etcd_name + ".tar.gz" -%}
@@ -29,6 +29,18 @@ etcd-extract:
     - cwd: {{ etcd_settings.binary_directory }}
     - unless: test -f etcd
 
+{% if systemd -%}
+etcd-systemd-file:
+  file.managed:
+    - name: /etc/systemd/system/etcd.service
+    - source: salt://etcd/files/etcd.service.jinja
+    - user: root
+    - group: root
+    - mode: 0755
+    - template: jinja
+    - watch_in:
+        service: etcd-service
+{% else -%}
 etcd-upstart-file:
   file.managed:
     - name: /etc/init/etcd.conf
@@ -39,6 +51,7 @@ etcd-upstart-file:
     - template: jinja
     - watch_in:
         service: etcd-service
+{% endif -%}
 
 etcd-service:
   service.running:

@@ -3,7 +3,7 @@
 
 {## Start with defaults from defaults.yaml ##}
 {% import_yaml "etcd/defaults.yaml" as default_settings %}
-
+{% set systemd = salt['grains.has_value']('systemd')|default(False) -%}
 {# Update settings defaults from pillar data #}
 {% set etcd_settings = salt['pillar.get'](
     'etcd',

@@ -1,0 +1,20 @@
+description "etcd {{ etcd.lookup.version }} distributed key-value store"
+author "Robert Fach <robert.fach@gmx.net>"
+
+start on (net-device-up
+          and local-filesystems
+          and runlevel [2345])
+stop on runlevel [016]
+
+respawn
+respawn limit 10 5
+
+{% for key,value in etcd.lookup.items() -%}
+env ETCD_{{ key|string|upper }}='{{ value or "" }}'
+{% endfor %}
+{% for key,value in etcd.etcdctl.items() -%}
+env ETCDCTL_{{ key|string|upper }}='{{ value or "" }}'
+{% endfor %}
+
+chdir {{ etcd.lookup.datadir }}
+exec {{ etcd.lookup.realhome }}/etcd >>{{ etcd.lookup.logdir }}/etcd.log 2>&1

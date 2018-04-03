@@ -1,0 +1,28 @@
+
+MacOS:
+  lookup:
+    os: 'darwin'
+    pkg:
+    src_hashsum:
+    src_hashurl:
+    manage_users: true
+  dl:
+    format: zip
+
+Windows:
+  lookup:
+    bakdir: 'C:\\temp\\lookupbak\\'
+    command: 'etcd.exe'
+    datadir: 'C:\\Program files\\Coreos\\etcd\\data\\'
+    pkg:
+    prefix: 'C:\\Program files\\Coreos\\'
+    logdir: 'C:\\Program files\\Coreos\\etcd\\log\\'
+    manage_users: false
+    os: 'windows'
+    realhome:
+    src_hashsum:
+    src_hashurl:
+    symhome:
+    tmpdir: 'C:\\temp\\lookuptmp\\'
+  dl:
+    format: zip

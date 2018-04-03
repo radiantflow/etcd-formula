@@ -1,12 +1,24 @@
 # -*- coding: utf-8 -*-
 # vim: ft=jinja
+{% import_yaml 'etcd/defaults.yaml' as defaults %}
+{% import_yaml "etcd/osmap.yaml" as osmap %}
 
-{## Start with defaults from defaults.yaml ##}
-{% import_yaml "etcd/defaults.yaml" as default_settings %}
+# start with lookup defaults, merge osmap, then pillar data
+{% set etcd = salt['grains.filter_by'](
+    defaults,
+    merge=salt['grains.filter_by'](
+        osmap,
+        grain='os',
+        merge=salt['pillar.get']('etcd', {}),
+    ),
+    base='etcd',
+) %}
 
-{# Update settings defaults from pillar data #}
-{% set etcd_settings = salt['pillar.get'](
-    'etcd',
-    default=default_settings.etcd,
-    merge=True)
+# coreos release download values
+{% set pkg = "{0}-v{1}-{2}-{3}".format(etcd.lookup.pkg or 'etcd', etcd.lookup.version, etcd.lookup.os, etcd.lookup.arch) %} 
+{% do etcd.dl.update(
+       { 'src_url': "{0}/v{1}/{2}.{3}".format(etcd.dl.base_uri, etcd.lookup.version, pkg, etcd.dl.format),
+         'archive_name': pkg + '.' + etcd.dl.format, 
+       })
 %}
+{% do etcd.lookup.update({ 'realhome': "{0}/{1}".format(etcd.lookup.prefix, pkg), 'pkg': pkg, }) %}

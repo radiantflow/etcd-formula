@@ -1,9 +1,45 @@
 # ``etcd`` formula configuration:
 
-# Right now, only static configuration is supported
+## Minimal optional configuration
 etcd:
-   cluster:
-     peers:
-       node-1: 
-         ip: 192.168.1.10
-       
+  lookup:
+    version: 3.2.18
+
+## More optional pillars follow ... (see defaults.yaml)
+    src_hashsum:
+    src_hashurl:
+    #use_upstream_repo: 'homebrew' #not mandatory for MacOS
+
+  service:
+    name: etcd0
+    data_dir: /var/lib/etcd/etcd0
+    initial_cluster: etcd0=https://0.0.0.0:2380
+    initial_cluster_state: new
+    initial_cluster_token: etcd-cluster-1
+    initial_advertise_peer_urls: https://0.0.0.0:2380
+    listen_peer_urls: https://0.0.0.0:2380
+    listen_client_urls: https://0.0.0.0:2379
+    advertise_client_urls: https://0.0.0.0:2379
+    auto_tls: '"false"'
+    peer_auto_tls: '"false"'
+    proxy: OFF
+
+  etcdctl:
+    api: 2
+    #discovery_srv: example.com
+    peers: https://0.0.0.0:2379
+    endpoint: https://0.0.0.0:2379
+    cert_file:
+    key_file:
+    ca_file:
+    username:
+    data_dir:
+    backup_dir:
+
+  #linux:
+    #alternatives disabled by default. Set 'altprioriy' value to enable.
+    #altpriority: {{ range(1, 90000) | random }}
+
+  #dl:
+    #base_uri: https://github.com/myfork/etcd/releases/download
+

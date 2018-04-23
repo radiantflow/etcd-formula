@@ -1,13 +1,13 @@
 etcd
 ====
 
-Formula to install and configure etcd.
+Formula to install and configure etcd on Linux and MacOS.
 
 .. note::
 
     See the full `Salt Formulas installation and usage instructions
     <http://docs.saltstack.com/en/latest/topics/development/conventions/formulas.html>`_.
-    Refer to pillar.example and defaults.yaml for configurable values. Tested on Linux (Ubuntu), MacOS planned. Not verified on Windows OS.
+    Refer to pillar.example and defaults.yaml for configurable values.
     
 Available states
 ================
@@ -18,7 +18,6 @@ Available states
 ``etcd``
 ------------
 Metastate for all deployment states.
-
 
 ``etcd.install``
 ------------

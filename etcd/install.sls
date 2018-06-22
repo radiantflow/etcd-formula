@@ -25,7 +25,7 @@ etcd-remove-prev-archive:
 etcd-extract-dirs:
   file.directory:
     - makedirs: True
-    - mode: '0755'
+    - mode: '0775'
     - require_in:
       - etcd-download-archive
     - names:

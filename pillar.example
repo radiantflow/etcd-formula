@@ -13,6 +13,7 @@ etcd:
   service:
     name: etcd0
     data_dir: /var/lib/etcd/etcd0
+    #etcd_endpoints: https://etcd01:2379,https://etcd02:2379,https://etcd03:2379
     initial_cluster: etcd0=https://0.0.0.0:2380
     initial_cluster_state: new
     initial_cluster_token: etcd-cluster-1
@@ -20,9 +21,13 @@ etcd:
     listen_peer_urls: https://0.0.0.0:2380
     listen_client_urls: https://0.0.0.0:2379
     advertise_client_urls: https://0.0.0.0:2379
+
+    ##Security https://coreos.com/etcd/docs/latest/op-guide/security.html
+    cert_file: /etc/ssl/etcd/ca.pem
+    key_file: /etc/ssl/etcd/client.pem
+    ca_file: /etc/ssl/etcd/client-key.pem
     auto_tls: '"false"'
     peer_auto_tls: '"false"'
-    proxy: OFF
 
   etcdctl:
     api: 2

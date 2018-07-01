@@ -20,7 +20,7 @@ etcd:
     #linux
     group: etcd
     realhome: /usr/local/coreos/etcd-v2.1.2-linux-amd64
-    service: etcd
+    service_name: etcd
     src_hashsum:
     src_hashurl:
     symhome: /opt/etcd

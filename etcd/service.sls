@@ -6,17 +6,17 @@
 
 etcd-launchd:
   file.managed:
-    - name: /Library/LaunchAgents/{{ etcd.lookup.service }}.plist
-    - source: /usr/local/opt/etcd/{{ etcd.lookup.service }}.plist
+    - name: /Library/LaunchAgents/{{ etcd.lookup.service_name }}.plist
+    - source: /usr/local/opt/etcd/{{ etcd.lookup.service_name }}.plist
     - group: wheel
     - watch_in:
-      - etcd_{{ etcd.lookup.service }}_running
+      - etcd_{{ etcd.lookup.service_name }}_running
 
 {% elif grains.init == 'systemd' %}
 
 etcd-systemd:
   file.managed:
-    - name: '/etc/systemd/system/{{ etcd.lookup.service }}.service'
+    - name: '/etc/systemd/system/{{ etcd.lookup.service_name }}.service'
     - source: 'salt://etcd/files/systemd.service.jinja'
     - user: root
     - group: root
@@ -31,13 +31,13 @@ etcd-systemd:
     - require:
       - file: etcd-systemd
     - require_in:
-      - service:  etcd_{{ etcd.lookup.service }}_running
+      - service:  etcd_{{ etcd.lookup.service_name }}_running
 
 {% elif grains.init  == 'upstart' %}
 
 etcd-service:
   file.managed:
-    - name: '/etc/init/{{ etcd.lookup.service }}.conf'
+    - name: '/etc/init/{{ etcd.lookup.service_name }}.conf'
     - source: 'salt://etcd/files/upstart.service.jinja'
     - user: root
     - group: root
@@ -46,13 +46,13 @@ etcd-service:
     - context:
       etcd: {{ etcd|json }}
     - require_in:
-      - service:  etcd_{{ etcd.lookup.service }}_running 
+      - service:  etcd_{{ etcd.lookup.service_name }}_running
 
 {% endif %}
 
-etcd_{{ etcd.lookup.service }}_running:
+etcd_{{ etcd.lookup.service_name }}_running:
   service.running:
-    - name: {{ etcd.lookup.service }}
+    - name: {{ etcd.lookup.service_name }}
     - enable: {{ etcd.lookup.service_enabled }}
     # todo: add launchd service for non-homebrew installs on MacOS
     - unless: test "`uname`" = "Darwin" && "{{ etcd.lookup.use_upstream_repo|lower }}" ==  "true"

@@ -21,7 +21,7 @@ Metastate for all deployment states.
 
 ``etcd.install``
 ------------
-Installs etcd version by downloading the archive from github and extracting it to the {{ etcd.lookup.prefix }} directory.
+Installs etcd version by downloading the archive from github and extracting it to the {{ etcd.prefix }} directory.
 
 ``etcd.service``
 ------------

@@ -4,9 +4,9 @@
 
 etcd-home-symlink:
   file.symlink:
-    - name: '{{ etcd.lookup.symhome }}'
-    - target: '{{ etcd.lookup.realhome }}'
-    - onlyif: test -d {{ etcd.lookup.realhome }}
+    - name: '{{ etcd.symhome }}'
+    - target: '{{ etcd.realhome }}'
+    - onlyif: test -d {{ etcd.realhome }}
     - force: True
 
 # Update system profile with PATH
@@ -29,14 +29,14 @@ etcd-config:
 etcd-home-alt-install:
   alternatives.install:
     - name: etcd-home
-    - link: '{{ etcd.lookup.symhome }}'
-    - path: '{{ etcd.lookup.realhome }}'
+    - link: '{{ etcd.symhome }}'
+    - path: '{{ etcd.realhome }}'
     - priority: {{ etcd.linux.altpriority }}
 
 etcd-home-alt-set:
   alternatives.set:
     - name: etcd-home
-    - path: {{ etcd.lookup.realhome }}
+    - path: {{ etcd.realhome }}
     - onchanges:
       - alternatives: etcd-home-alt-install
 
@@ -45,7 +45,7 @@ etcd-alt-install:
   alternatives.install:
     - name: etcd
     - link: {{ etcd.linux.symlink }}
-    - path: {{ etcd.lookup.realhome }}/etcd
+    - path: {{ etcd.realhome }}/etcd
     - priority: {{ etcd.linux.altpriority }}
     - require:
       - alternatives: etcd-home-alt-install
@@ -54,7 +54,7 @@ etcd-alt-install:
 etcd-alt-set:
   alternatives.set:
     - name: etcd
-    - path: {{ etcd.lookup.realhome }}/etcd
+    - path: {{ etcd.realhome }}/etcd
     - onchanges:
       - alternatives: etcd-alt-install
 

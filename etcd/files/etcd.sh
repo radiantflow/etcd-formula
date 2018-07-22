@@ -1,2 +1,2 @@
-export ETCD_HOME={{ etcd.lookup.realhome }}
+export ETCD_HOME={{ etcd.realhome }}
 export PATH=${PATH}:${ETCD_HOME}

@@ -2,15 +2,15 @@
 # vim: ft=yaml
 {% from "etcd/map.jinja" import etcd with context -%}
 
-  {% if etcd.lookup.manage_users == true %}
+  {% if etcd.manage_users == true %}
 etcd-user-group-home:
   group.present:
-    - name: {{ etcd.lookup.group or 'etcd' }}
+    - name: {{ etcd.group or 'etcd' }}
     - system: True
   user.present:
-    - name: {{ etcd.lookup.user or 'etcd' }}
+    - name: {{ etcd.user or 'etcd' }}
     - gid_from_name: true
-    - home: {{ etcd.lookup.prefix }}
+    - home: {{ etcd.prefix }}
     - require_in:
       - file: etcd-user-envfile
   {% endif %}
@@ -18,7 +18,7 @@ etcd-user-group-home:
 # Cleanup first
 etcd-remove-prev-archive:
   file.absent:
-    - name: {{ etcd.lookup.tmpdir }}{{ etcd.dl.archive_name }}
+    - name: {{ etcd.tmpdir }}{{ etcd.dl.archive_name }}
     - require_in:
       - etcd-extract-dirs
 
@@ -29,12 +29,12 @@ etcd-extract-dirs:
     - require_in:
       - etcd-download-archive
     - names:
-      - {{ etcd.lookup.tmpdir }}
-      - {{ etcd.lookup.prefix }}
-      - {{ etcd.lookup.datadir }}
-  {% if etcd.lookup.manage_users %}
-    - user: {{ etcd.lookup.user or 'etcd' }}
-    - group: {{ etcd.lookup.group or 'etcd' }}
+      - {{ etcd.tmpdir }}
+      - {{ etcd.prefix }}
+      - {{ etcd.datadir }}
+  {% if etcd.manage_users %}
+    - user: {{ etcd.user or 'etcd' }}
+    - group: {{ etcd.group or 'etcd' }}
     - recurse:
       - user
       - group
@@ -43,33 +43,33 @@ etcd-extract-dirs:
 
 etcd-user-envfile:
   file.managed:
-    - name: {{ etcd.lookup.prefix }}/env4etcd.sh
+    - name: {{ etcd.prefix }}/env4etcd.sh
     - source: salt://etcd/files/env4etcd.sh
     - template: jinja
     - mode: 644
-    - user: {{ etcd.lookup.user or 'etcd' }}
-    - group: {{ etcd.lookup.group or 'etcd' }}
+    - user: {{ etcd.user or 'etcd' }}
+    - group: {{ etcd.group or 'etcd' }}
     - context:
       etcd: {{ etcd|json }}
 
   {% endif %}
 
-{% if etcd.lookup.use_upstream_repo|lower == 'true' %}
+{% if etcd.use_upstream_repo|lower == 'true' %}
 
 etcd-download-archive:
   cmd.run:
-    - name: curl {{ etcd.dl.opts }} -o '{{ etcd.lookup.tmpdir }}{{ etcd.dl.archive_name }}' {{ etcd.dl.src_url }}
+    - name: curl {{ etcd.dl.opts }} -o '{{ etcd.tmpdir }}{{ etcd.dl.archive_name }}' {{ etcd.dl.src_url }}
     - retry:
         attempts: {{ etcd.dl.retries }}
         interval: {{ etcd.dl.interval }}
-    - unless: test -f {{ etcd.lookup.realhome }}/{{ etcd.lookup.command }}
+    - unless: test -f {{ etcd.realhome }}/{{ etcd.command }}
 
-    {%- if etcd.lookup.src_hashsum and grains['saltversioninfo'] <= [2016, 11, 6] %}
+    {%- if etcd.src_hashsum and grains['saltversioninfo'] <= [2016, 11, 6] %}
 etcd-check-archive-hash:
    module.run:
      - name: file.check_hash
-     - path: '{{ etcd.lookup.tmpdir }}/{{ etcd.dl.archive_name }}'
-     - file_hash: {{ etcd.lookup.src_hashsum }}
+     - path: '{{ etcd.tmpdir }}/{{ etcd.dl.archive_name }}'
+     - file_hash: {{ etcd.src_hashsum }}
      - onchanges:
        - cmd: etcd-download-archive
      - require_in:
@@ -79,22 +79,22 @@ etcd-check-archive-hash:
 {% endif %}
 
 etcd-install:
-{% if grains.os == 'MacOS' and etcd.lookup.use_upstream_repo|lower == 'homebrew' %}
+{% if grains.os == 'MacOS' and etcd.use_upstream_repo|lower == 'homebrew' %}
   pkg.installed:
-    - name: {{ etcd.lookup.pkg }}
-    - version: {{ etcd.lookup.version }}
-{% elif etcd.lookup.use_upstream_repo|lower == 'true' %}
+    - name: {{ etcd.pkg }}
+    - version: {{ etcd.version }}
+{% elif etcd.use_upstream_repo|lower == 'true' %}
   archive.extracted:
-    - source: 'file://{{ etcd.lookup.tmpdir }}/{{ etcd.dl.archive_name }}'
-    - name: '{{ etcd.lookup.prefix }}'
+    - source: 'file://{{ etcd.tmpdir }}/{{ etcd.dl.archive_name }}'
+    - name: '{{ etcd.prefix }}'
     - archive_format: {{ etcd.dl.format.split('.')[0] }}
-    - unless: test -f {{ etcd.lookup.realhome }}{{ etcd.lookup.command }}
+    - unless: test -f {{ etcd.realhome }}{{ etcd.command }}
     - watch_in:
-      - service: etcd_{{ etcd.lookup.service_name }}_running
+      - service: etcd_{{ etcd.service_name }}_running
     - onchanges:
       - cmd: etcd-download-archive
-    {%- if etcd.lookup.src_hashurl and grains['saltversioninfo'] > [2016, 11, 6] %}
-    - source_hash: {{ etcd.lookup.src_hashurl }}
+    {%- if etcd.src_hashurl and grains['saltversioninfo'] > [2016, 11, 6] %}
+    - source_hash: {{ etcd.src_hashurl }}
     {%- endif %}
 
 {% endif %}

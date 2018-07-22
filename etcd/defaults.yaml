@@ -2,30 +2,29 @@
 # vim: ft=yaml
 
 etcd:
-  lookup:
-    #windows/linu/darwin
-    arch: amd64
-    pkg:
-    service_enabled: true
-    version: 3.2.18
-    #linux/darwin
-    bakdir: /tmp/etcd_backup/
-    command: etcd
-    datadir: /var/lib/etcd/
-    prefix: /usr/local/coreos
-    logdir: /var/log/etcd/
-    manage_users: true
-    os: linux
-    tmpdir: /tmp/coreostmp/
-    #linux
-    group: etcd
-    realhome: /usr/local/coreos/etcd-v2.1.2-linux-amd64
-    service_name: etcd
-    src_hashsum:
-    src_hashurl:
-    symhome: /opt/etcd
-    user: etcd
-    use_upstream_repo: true
+  #windows/linu/darwin
+  arch: amd64
+  pkg:
+  service_enabled: true
+  version: 3.2.18
+  #linux/darwin
+  bakdir: /tmp/etcd_backup/
+  command: etcd
+  datadir: /var/lib/etcd/
+  prefix: /usr/local/coreos
+  logdir: /var/log/etcd/
+  manage_users: true
+  os: linux
+  tmpdir: /tmp/coreostmp/
+  #linux
+  group: etcd
+  realhome: /usr/local/coreos/etcd-v2.1.2-linux-amd64
+  service_name: etcd
+  src_hashsum:
+  src_hashurl:
+  symhome: /opt/etcd
+  user: etcd
+  use_upstream_repo: true
 
   dl:
     archive_name:

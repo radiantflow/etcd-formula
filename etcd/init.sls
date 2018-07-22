@@ -8,16 +8,16 @@ include:
   - etcd.linuxenv
 
 extend:
-  etcd_{{ etcd.lookup.service }}_running:
+  etcd_{{ etcd.service }}_running:
     service:
       - listen:
-           {% if etcd.lookup.use_upstream_repo|lower == 'homebrew' %}
+           {% if etcd.use_upstream_repo|lower == 'homebrew' %}
         - file: etcd-install
            {% else %}
         - archive: etcd-install
            {% endif %}
       - require:
-           {% if etcd.lookup.use_upstream_repo|lower == 'homebrew' %}
+           {% if etcd.use_upstream_repo|lower == 'homebrew' %}
         - file: etcd-install
            {% else %}
         - archive: etcd-install

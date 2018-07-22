@@ -2,13 +2,12 @@
 
 ## Minimal optional configuration
 etcd:
-  lookup:
-    version: 3.2.18
+  version: 3.2.18
 
 ## More optional pillars follow ... (see defaults.yaml)
-    src_hashsum:
-    src_hashurl:
-    #use_upstream_repo: 'homebrew' #not mandatory for MacOS
+  src_hashsum:
+  src_hashurl:
+  #use_upstream_repo: 'homebrew' #not mandatory for MacOS
 
   service:
     name: etcd0

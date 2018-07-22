@@ -14,11 +14,11 @@ Environment='ETCD_{{ key|string|upper }}={{ value or "" }}'
 Environment='ETCDCTL_{{ key|string|upper }}={{ value or "" }}'
 {% endfor %}
 
-ExecStart={{ etcd.lookup.realhome }}/etcd
+ExecStart={{ etcd.realhome }}/etcd
 Restart=always
 RestartSec=10s
 LimitNOFILE=40000
-WorkingDirectory={{ etcd.lookup.datadir }}
+WorkingDirectory={{ etcd.datadir }}
 
 [Install]
 WantedBy=multi-user.target

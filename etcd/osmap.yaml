@@ -1,6 +1,6 @@
 
 MacOS:
-  lookup:
+  etcd:
     os: 'darwin'
     pkg:
     src_hashsum:
@@ -10,8 +10,8 @@ MacOS:
     format: zip
 
 Windows:
-  lookup:
-    bakdir: 'C:\\temp\\lookupbak\\'
+  etcd:
+    bakdir: 'C:\\temp\\etcdbak\\'
     command: 'etcd.exe'
     datadir: 'C:\\Program files\\Coreos\\etcd\\data\\'
     pkg:
@@ -23,6 +23,6 @@ Windows:
     src_hashsum:
     src_hashurl:
     symhome:
-    tmpdir: 'C:\\temp\\lookuptmp\\'
+    tmpdir: 'C:\\temp\\etcdtmp\\'
   dl:
     format: zip

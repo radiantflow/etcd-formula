@@ -90,7 +90,7 @@ etcd-install:
     - archive_format: {{ etcd.dl.format.split('.')[0] }}
     - unless: test -f {{ etcd.lookup.realhome }}{{ etcd.lookup.command }}
     - watch_in:
-      - service: etcd_{{ etcd.lookup.service }}_running
+      - service: etcd_{{ etcd.lookup.service_name }}_running
     - onchanges:
       - cmd: etcd-download-archive
     {%- if etcd.lookup.src_hashurl and grains['saltversioninfo'] > [2016, 11, 6] %}

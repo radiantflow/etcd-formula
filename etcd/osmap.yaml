@@ -1,28 +1,30 @@
 
 MacOS:
-  etcd:
-    os: 'darwin'
-    pkg:
-    src_hashsum:
-    src_hashurl:
-    manage_users: true
+  os: 'darwin'
+  pkg:
+  src_hashsum:
+  src_hashurl:
+  manage_users: true
   dl:
     format: zip
 
 Windows:
-  etcd:
-    bakdir: 'C:\\temp\\etcdbak\\'
-    command: 'etcd.exe'
-    datadir: 'C:\\Program files\\Coreos\\etcd\\data\\'
-    pkg:
-    prefix: 'C:\\Program files\\Coreos\\'
-    logdir: 'C:\\Program files\\Coreos\\etcd\\log\\'
-    manage_users: false
-    os: 'windows'
-    realhome:
-    src_hashsum:
-    src_hashurl:
-    symhome:
-    tmpdir: 'C:\\temp\\etcdtmp\\'
+  bakdir: 'C:\\temp\\etcdbak\\'
+  command: 'etcd.exe'
+  datadir: 'C:\\Program files\\Coreos\\etcd\\data\\'
+  pkg:
+  prefix: 'C:\\Program files\\Coreos\\'
+  logdir: 'C:\\Program files\\Coreos\\etcd\\log\\'
+  manage_users: false
+  os: 'windows'
+  realhome:
+  src_hashsum:
+  src_hashurl:
+  symhome:
+  tmpdir: 'C:\\temp\\etcdtmp\\'
   dl:
     format: zip
+
+CentOS:
+  docker:
+    packages: ['python-docker-py',]

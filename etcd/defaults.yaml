@@ -36,6 +36,19 @@ etcd:
     retries: 1
     unpack_opts: --strip-components=1
 
+  docker:
+    packages: ['python-docker', 'python3-docker',]
+    enabled: false
+    image: quay.io/coreos/etcd
+    version: latest
+    network_mode: host
+    ports:
+      - 127.0.0.1:2379:2379
+      - 127.0.0.1:2380:2380
+    volumes:
+      - /usr/share/ca-certificates/:/etc/ssl/certs
+    stop_etcd_service_first: true
+
   service:
     #defaults for linux
     name: etcd0

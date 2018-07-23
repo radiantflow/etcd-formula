@@ -47,3 +47,17 @@ etcd:
   #dl:
     #base_uri: https://github.com/myfork/etcd/releases/download
 
+etcd:
+  version: 3.2.18
+  docker:
+    enabled: True
+    # If docker.enabled=True, defaults can be overridden here
+    version: latest
+    ports:
+      - 127.0.0.1:2379:2379
+      - 127.0.0.1:2380:2380
+      - 127.0.0.1:4001:4001
+    volumes:
+      - /usr/share/ca-certificates/:/etc/ssl/certs
+    stop_etcd_service_first: False
+    

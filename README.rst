@@ -17,21 +17,32 @@ Available states
 
 ``etcd``
 ------------
-Metastate for all deployment states.
+Metastate for all the software and service deployment states.
 
 ``etcd.install``
 ------------
 Installs etcd version by downloading the archive from github and extracting it to the {{ etcd.prefix }} directory.
 
-``etcd.service``
-------------
-Configure and (re)start your ETCD service and clusters.
-
 ``etcd.linuxenv``
 ------------
 Configure launchd, systemd, or upstart configuration, this will copy. Setup linux alternatives if enabled and supported.
 
-.. note::
+.. note:: Enable linux alternatives by setting nonzero 'altpriority' pillar value; otherwise feature is disabled.
 
-Enable linux alternatives by setting nonzero 'altpriority' pillar value; otherwise feature is disabled.
+``etcd.service``
+------------
+Ensure the `etcd` service is registered and (re)started on minion.
 
+``etcd.service.stopped``
+------------
+Ensure the `etcd` service is stopped on minion.
+
+``etcd.docker.running``
+------------
+Ensure that an `etcd` container with a specific configuration is present and running. Includes the `etcd.service.stopped` state by default.
+
+.. note:: Requires Docker! Running the `docker` state from the "docker-formula" satisfies this requirement.
+
+``etcd.docker.stopped``
+------------
+Ensure that `etcd` container is stopped

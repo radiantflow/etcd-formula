@@ -46,7 +46,7 @@ etcd-service:
     - context:
       etcd: {{ etcd|json }}
     - require_in:
-      - service:  etcd_{{ etcd.service_name }}_running
+      - service:  etcd_{{ etcd.service_name }}_running 
 
 {% endif %}
 

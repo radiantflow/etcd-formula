@@ -39,9 +39,15 @@ Ensure the `etcd` service is stopped on minion.
 
 ``etcd.docker.running``
 ------------
-Ensure that an `etcd` container with a specific configuration is present and running. Includes the `etcd.service.stopped` state by default.
+Ensure that an `etcd` container with a specific configuration is present and running. Requires Docker to be running - you could run ``docker`` state from ``docker-formula`` to ensure this requirement.
 
-.. note:: Requires Docker! Running the `docker` state from the "docker-formula" satisfies this requirement.
+State top file::
+
+        base:
+          '*':
+            - docker                  #saltstack-formulas/docker-formula
+            - etcd.docker.running     #saltstack-formulas/etcd-formula
+
 
 ``etcd.docker.stopped``
 ------------

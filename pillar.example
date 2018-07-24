@@ -47,11 +47,10 @@ etcd:
   #dl:
     #base_uri: https://github.com/myfork/etcd/releases/download
 
-etcd:
-  version: 3.2.18
   docker:
     enabled: True
     # If docker.enabled=True, defaults can be overridden here
+    image: quay.io/coreos/etcd
     version: latest
     ports:
       - 127.0.0.1:2379:2379

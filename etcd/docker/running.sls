@@ -2,7 +2,7 @@
 # vim: ft=yaml
 {% from "etcd/map.jinja" import etcd with context -%}
 
-   {% if etcd.docker.stop_etcd_service_first %}
+   {% if etcd.docker.stop_local_etcd_service_first %}
 include:
   - etcd.service.stopped
    {% endif %}

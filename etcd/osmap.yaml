@@ -27,4 +27,4 @@ Windows:
 
 CentOS:
   docker:
-    packages: ['python-docker-py',]
+    packages: ['python2-docker',]

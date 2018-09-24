@@ -1,6 +1,5 @@
-source "http://rubygems.org"
+source "https://rubygems.org"
 
-gem "test-kitchen", "> 1.2.0"
-gem "kitchen-vagrant"
+gem "test-kitchen"
+gem "kitchen-docker"
 gem "kitchen-salt"
-gem "rake"

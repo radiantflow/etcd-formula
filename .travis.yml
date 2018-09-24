@@ -1,30 +1,19 @@
-language: python
-python:
-  - '2.7'
+sudo: required
 
-env:
-  global:
-    - BS_PIP_ALLOWED=1
-    - BS_ECHO_DEBUG=1
-    - SALT_ARGS="-l debug --local --retcode-passthrough --pillar-root=test/pillar --file-root=$PWD"
-  matrix:
-    - STATE=etcd.install
+language: python
+
+services:
+  - etcd
 
 before_install:
-  - sudo apt-get update
-  - curl -L http://bootstrap.saltstack.org | sudo sh -E -s -- -P stable
+  - bundle install
 
-install:
-  - sudo mkdir -p /srv && sudo ln -sfn $PWD /srv/formula
-  # See what kind of travis box you're on to help with making your states
-  # compatible with travis
-  - sudo salt-call grains.items --local  
-
-  # See what kind of travis box you're on
-  # to help with making your states compatible with travis
-  - sudo salt-call grains.items --local
+env:
+  matrix:
+    - INSTANCE: default-ubuntu-1804
+    - INSTANCE: default-debian-stretch
+    - INSTANCE: version-339-ubuntu-1804
+    - INSTANCE: version-339-centos7
 
 script:
-  - sudo -E salt-call state.show_sls $STATE $SALT_ARGS
-  - sudo salt-call state.sls $STATE $SALT_ARGS
-
+  - bundle exec kitchen verify ${INSTANCE}

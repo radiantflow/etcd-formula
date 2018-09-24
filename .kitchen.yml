@@ -1,0 +1,66 @@
+---
+driver:
+  name: docker
+  use_sudo: false
+  privileged: true
+
+provisioner:
+  name: salt_solo
+  log_level: warning
+  require_chef: false
+  formula: etcd
+  state_top:
+    base:
+      '*':
+        - etcd
+  pillars:
+    top.sls:
+      base:
+        '*':
+          - etcd
+
+platforms:
+  - name: ubuntu-18.04
+    driver_config:
+      provision_command:
+        - apt-get update && apt-get install -y locales ifupdown
+        - locale-gen en_US.UTF-8
+        - update-locale LANG=en_US.UTF-8
+        - mkdir -p /run/sshd
+      run_command: /lib/systemd/systemd
+  - name: debian-stretch
+    driver_config:
+      provision_command:
+        - apt-get update && apt-get install -y locales ifupdown
+        - locale-gen en_US.UTF-8
+      run_command: /lib/systemd/systemd
+  # name: centos7
+  # driver_config:
+  #   run_command: /lib/systemd/systemd
+
+suites:
+  - name: default
+    provisioner:
+      pillars:
+        etcd.sls:
+          etcd:
+            version: '3.2.24'
+            service:
+              auto_tls: ''
+              peer_auto_tls: ''
+  - name: version-3.3.9
+    provisioner:
+      pillars:
+        etcd.sls:
+          etcd:
+            version: '3.3.9'
+            service:
+              auto_tls: ''
+              peer_auto_tls: ''
+    excludes:
+      - debian-stretch
+
+verifier:
+  name: shell
+  remote_exec: false
+  command: testinfra -vvv --connection=etcd --hosts=root@$KITCHEN_CONTAINER_ID --junit-xml junit-$KITCHEN_INSTANCE.xml test/integration/$KITCHEN_SUITE

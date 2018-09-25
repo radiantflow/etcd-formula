@@ -9,7 +9,7 @@ stop on runlevel [016]
 respawn
 respawn limit 10 5
 
-{% for key,value in etcd.items() -%}
+{% for key,value in etcd.services.items() -%}
 env ETCD_{{ key|string|upper }}='{{ value or "" }}'
 {% endfor %}
 {% for key,value in etcd.etcdctl.items() -%}

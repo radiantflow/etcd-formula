@@ -9,7 +9,7 @@ include:
      {% else %}
   - etcd.install
   - etcd.service
-  - etcd.linuxenv
+  #- etcd.linuxenv
 
 extend:
   etcd_{{ etcd.service_name }}_running:

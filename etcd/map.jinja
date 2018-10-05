@@ -21,6 +21,34 @@
          'archive_name': pkg + '.' + etcd.dl.format, }) %}
 {% do etcd.update({ 'realhome': "{0}/{1}".format(etcd.prefix, pkg), 'pkg': pkg, }) %}
 
-# coreos release docker
-{% set args = " -name " ~ etcd.service.name ~ " -advertise-client-urls " ~ etcd.service.advertise_client_urls ~ " -listen-client-urls " ~ etcd.service.listen_client_urls ~ " -initial-advertise-peer-urls " ~ etcd.service.initial_advertise_peer_urls ~ " -listen-peer-urls " ~ etcd.service.listen_peer_urls ~ " -initial-cluster-token " ~ etcd.service.initial_cluster_token ~ " -initial-cluster " ~ etcd.service.initial_cluster ~ " -initial-cluster-state " ~ etcd.service.initial_cluster_state ~ " -data-dir " ~ etcd.service.data_dir  %}
-{% do etcd.docker.update({ 'cmd': "{0} {1}".format(etcd.command, args),}) %}
+{# Add service Defaults #}
+{% do etcd.service.leader.update(
+    url = 'https://' + etcd.service.leader.host if etcd.service.leader.ssl else 'http://' + etcd.service.leader.host,
+    name = etcd.service.leader.get('name', grains['id'].split('.') | first)) %}
+{% set leader = etcd.service.leader %}
+
+{%- if etcd.service.config.get("listen_client_urls") == None -%}
+    {%- do etcd.service.config.update({'listen_client_urls': leader.url + ':' + leader.client_port | string }) -%}
+{%- endif -%}
+{%- if etcd.service.config.get("advertise_client_urls") == None -%}
+    {%- do etcd.service.config.update({'advertise_client_urls': leader.url + ':' + leader.client_port | string }) -%}
+{%- endif -%}
+{%- if etcd.service.config.get("listen_peer_urls") == None -%}
+    {%- do etcd.service.config.update({'listen_peer_urls': leader.url + ':' + leader.service_port | string }) -%}
+{%- endif -%}
+{%- if etcd.service.config.get("initial_advertise_peer_urls") == None -%}
+    {%- do etcd.service.config.update({'initial_advertise_peer_urls': leader.url + ':' + leader.service_port | string }) -%}
+{%- endif -%}
+{%- if etcd.service.config.get("initial_cluster") == None -%}
+    {% set initial_cluster = [] %}
+    {% do etcd.service.members.append(etcd.service.leader) %}
+    {% for peer_name, peer in etcd.service.peers.items() %}
+        {% set merged_member = salt['pillar.get']('etcd:service:peers' ~ peer_name, etcd.defaults.peer, merge=True) %}
+        {% do merged_member.update(name = merged_member.get('name', peer_name)) %}
+        {% do etcd.service.members.append(merged_member) %}
+    {% endfor %}
+    {% for member in etcd.service.members %}
+        {% do initial_cluster.append(member.name + "=" + ('https://' if member.ssl else 'http://') + member.host + ':' + member.service_port | string) %}
+    {% endfor %}
+    {% do etcd.service.config.update({'initial_cluster': initial_cluster | join(', ')}) %}
+{%- endif -%}

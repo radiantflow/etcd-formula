@@ -1,0 +1,6 @@
+ETCD_NAME='{{ etcd.service.leader.get('name', grains['id'].split('.') | first) }}'
+ETCD_HOME='{{ etcd.realhome }}'
+ETCD_DATA_DIR='{{ etcd.datadir }}'
+{% for key,value in etcd.service.config.items() -%}
+ETCD_{{ key|string|upper }}='{{ value or "" }}'
+{% endfor -%}

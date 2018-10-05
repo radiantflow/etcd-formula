@@ -1,5 +1,4 @@
-ETCD_NAME='{{ etcd.service.leader.get('name', grains['id'].split('.') | first) }}'
-ETCD_HOME='{{ etcd.realhome }}'
+ETCD_NAME='{{ etcd.service.current.get('name', grains['id'].split('.') | first) }}'
 ETCD_DATA_DIR='{{ etcd.datadir }}'
 ETCD_INITIAL_CLUSTER_STATE= '{{ initial_cluster_state }}'
 {% for key,value in etcd.service.config.items() -%}

@@ -3,18 +3,7 @@
 {% from "etcd/map.jinja" import etcd with context %}
 
 
-
-{% if grains.os == 'MacOS' and etcd.use_upstream_repo|lower == 'homebrew' %}
-
-etcd-launchd:
-  file.managed:
-    - name: /Library/LaunchAgents/{{ etcd.service_name }}.plist
-    - source: /usr/local/opt/etcd/{{ etcd.service_name }}.plist
-    - group: wheel
-    - watch_in:
-      - etcd_{{ etcd.service_name }}_running
-
-{% elif grains.init == 'systemd' %}
+{% if grains.init == 'systemd' %}
 
 etcd-default:
   file.managed:
@@ -54,20 +43,6 @@ etcd-systemd:
     - require_in:
       - service:  etcd_{{ etcd.service_name }}_running
 
-{% elif grains.init  == 'upstart' %}
-
-etcd-service:
-  file.managed:
-    - name: '/etc/init/{{ etcd.service_name }}.conf'
-    - source: 'salt://etcd/files/upstart.service.jinja'
-    - user: root
-    - group: root
-    - mode: '0750'
-    - template: jinja
-    - context:
-      etcd: {{ etcd|json }}
-    - require_in:
-      - service:  etcd_{{ etcd.service_name }}_running 
 
 {% endif %}
 
@@ -77,8 +52,6 @@ etcd_{{ etcd.service_name }}_running:
     - enable: {{ etcd.service_enabled }}
     - watch:
       - file: etcd-default
-    # todo: add launchd service for non-homebrew installs on MacOS
-    - unless: test "`uname`" = "Darwin" && "{{ etcd.use_upstream_repo|lower }}" ==  "true"
 
 etcd_whats_wrong_with_{{ etcd.service_name }}:
   cmd.run:

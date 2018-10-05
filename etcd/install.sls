@@ -79,11 +79,7 @@ etcd-check-archive-hash:
 {% endif %}
 
 etcd-install:
-{% if grains.os == 'MacOS' and etcd.use_upstream_repo|lower == 'homebrew' %}
-  pkg.installed:
-    - name: {{ etcd.pkg }}
-    - version: {{ etcd.version }}
-{% elif etcd.use_upstream_repo|lower == 'true' %}
+{% if etcd.use_upstream_repo|lower == 'true' %}
   archive.extracted:
     - source: 'file://{{ etcd.tmpdir }}/{{ etcd.dl.archive_name }}'
     - name: '{{ etcd.prefix }}'

@@ -5,5 +5,5 @@
 show etcd cluster health:
   cmd.run:
     - name: ./etcdctl cluster-health
-    - cwd: {{ opensds.realhome }}
+    - cwd: {{ etcd.realhome }}
 

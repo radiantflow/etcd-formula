@@ -5,7 +5,6 @@
 include:
   - etcd.install
   - etcd.service
-  #- etcd.linuxenv
 
 extend:
   etcd_{{ etcd.service_name }}_running:

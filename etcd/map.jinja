@@ -1,17 +1,12 @@
 # -*- coding: utf-8 -*-
 # vim: ft=jinja
 {% import_yaml 'etcd/defaults.yaml' as defaults %}
-{% import_yaml "etcd/osmap.yaml" as osmap %}
 
-# start with defaults, merge osmap, then pillar data
+# start with defaults, merge pillar data
 {% set etcd = salt['grains.filter_by'](
     defaults,
-    merge=salt['grains.filter_by'](
-        osmap,
-        grain='os',
-        merge=salt['pillar.get']('etcd', {}),
-    ),
-    base='etcd',
+    merge=salt['pillar.get']('etcd', {}),
+    base='etcd'
 ) %}
 
 # coreos release package
@@ -41,6 +36,7 @@
 {%- endif -%}
 {%- if etcd.service.config.get("initial_cluster") == None -%}
     {% set initial_cluster = [] %}
+    {% set endpoints = [] %}
     {% do etcd.service.members.append(etcd.service.leader) %}
     {% for peer_name, peer in etcd.service.peers.items() %}
         {% set merged_member = salt['pillar.get']('etcd:service:peers' ~ peer_name, etcd.defaults.peer, merge=True) %}
@@ -49,6 +45,11 @@
     {% endfor %}
     {% for member in etcd.service.members %}
         {% do initial_cluster.append(member.name + "=" + ('https://' if member.ssl else 'http://') + member.host + ':' + member.service_port | string) %}
+        {% do endpoints.append(('https://' if member.ssl else 'http://') + member.host + ':' + member.client_port | string) %}
     {% endfor %}
     {% do etcd.service.config.update({'initial_cluster': initial_cluster | join(', ')}) %}
+
+    {%- if etcd.etcdctl.get("endpoints") == None -%}
+        {% do etcd.etcdctl.update({'endpoints': endpoints | join(', ')}) %}
+    {%- endif -%}
 {%- endif -%}

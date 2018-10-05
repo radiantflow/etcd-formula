@@ -11,14 +11,14 @@ etcd:
   bakdir: /tmp/etcd_backup/
   command: etcd
   datadir: /var/lib/etcd/
-  prefix: /usr/local/coreos
+  prefix: /opt/etcd
   logdir: /var/log/etcd/
   manage_users: true
   os: linux
   tmpdir: /tmp/coreostmp/
   #linux
   group: etcd
-  realhome: /usr/local/coreos/etcd-v3.3.9-linux-amd64
+  realhome: /opt/etcd/etcd-v3.3.9-linux-amd64
   service_name: etcd
   src_hashsum:
   src_hashurl:
@@ -65,6 +65,7 @@ etcd:
 
   defaults:
     peer:
+      client_port: 2379
       service_port: 2380
       ssl: false
 
@@ -72,8 +73,7 @@ etcd:
   etcdctl:
     api: 3
     discovery_srv:
-    peers: 'https://127.0.0.1:2379'
-    endpoint: 'https://127.0.0.1:2379'
+    endpoints:
     cert_file:
     key_file:
     ca_file:

@@ -16,7 +16,7 @@ etcd-default:
     - context:
       etcd: {{ etcd|json }}
     - defaults:
-{%- if salt['cmd.shell']('. /var/lib/etcd/configenv; etcdctl cluster-health > /dev/null 2>&1; echo $?') != '0' %}
+{%- if salt['cmd.shell']('. /var/lib/etcd/configenv; etcdctl endpoint health > /dev/null 2>&1; echo $?') != '0' %}
         initial_cluster_state: new
 {%- else %}
         initial_cluster_state: existing

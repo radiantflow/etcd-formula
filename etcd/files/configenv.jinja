@@ -1,0 +1,5 @@
+{%- for key,value in etcd.etcdctl.items() -%}
+{%- if value != None -%}
+export ETCDCTL_{{ key|string|upper }}='{{ value or "" }}'
+{% endif -%}
+{%- endfor -%}

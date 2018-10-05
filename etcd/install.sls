@@ -43,8 +43,8 @@ etcd-extract-dirs:
 
 etcd-user-envfile:
   file.managed:
-    - name: {{ etcd.prefix }}/env4etcd.sh
-    - source: salt://etcd/files/env4etcd.sh
+    - name: {{ etcd.datadir }}configenv
+    - source: salt://etcd/files/configenv.jinja
     - template: jinja
     - mode: 644
     - user: {{ etcd.user or 'etcd' }}
@@ -53,8 +53,6 @@ etcd-user-envfile:
       etcd: {{ etcd|json }}
 
   {% endif %}
-
-{% if etcd.use_upstream_repo|lower == 'true' %}
 
 etcd-download-archive:
   cmd.run:
@@ -76,10 +74,7 @@ etcd-check-archive-hash:
        - archive: etcd-install
     {%- endif %}
 
-{% endif %}
-
 etcd-install:
-{% if etcd.use_upstream_repo|lower == 'true' %}
   archive.extracted:
     - source: 'file://{{ etcd.tmpdir }}/{{ etcd.dl.archive_name }}'
     - name: '{{ etcd.prefix }}'
@@ -91,7 +86,19 @@ etcd-install:
       - cmd: etcd-download-archive
     {%- if etcd.src_hashurl and grains['saltversioninfo'] > [2016, 11, 6] %}
     - source_hash: {{ etcd.src_hashurl }}
-    {%- endif %}
+    {% endif %}
 
-{% endif %}
+etcd-link:
+  file.symlink:
+    - target: {{ etcd.realhome }}/etcd
+    - name: /usr/local/bin/etcd
+    - watch:
+      - archive: etcd-install
+
+etcd-etcdctl-link:
+  file.symlink:
+    - target: {{ etcd.realhome }}/etcdctl
+    - name: /usr/local/bin/etcdctl
+    - watch:
+      - archive: etcd-install
 

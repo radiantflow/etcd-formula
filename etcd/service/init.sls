@@ -5,6 +5,19 @@
 
 {% if grains.init == 'systemd' %}
 
+{% if etcd.service.initial_cluster_state == 'existing' and salt['grains.get']('etcd_initialized') != True  %}
+etcd-initialized:
+  cmd.script:
+    - source: salt://etcd/files/add_member.jinja
+    - shell: /bin/bash
+    - template: jinja
+    - context:
+      etcd: {{ etcd|json }}
+  grains.present:
+    - name: etcd_initialized
+    - value: True
+{% endif %}
+
 etcd-default:
   file.managed:
     - name: /etc/default/etcd
@@ -15,12 +28,6 @@ etcd-default:
     - template: jinja
     - context:
       etcd: {{ etcd|json }}
-    - defaults:
-{%- if salt['cmd.shell']('. /var/lib/etcd/configenv; etcdctl endpoint health > /dev/null 2>&1; echo $?') != '0' %}
-        initial_cluster_state: new
-{%- else %}
-        initial_cluster_state: existing
-{%- endif %}
     - watch_in:
       - etcd_{{ etcd.service_name }}_running
 
@@ -42,7 +49,6 @@ etcd-systemd:
       - file: etcd-systemd
     - require_in:
       - service:  etcd_{{ etcd.service_name }}_running
-
 
 {% endif %}
 

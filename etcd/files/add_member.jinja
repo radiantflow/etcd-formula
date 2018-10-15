@@ -1,0 +1,7 @@
+{%- for key,value in etcd.etcdctl.items() -%}
+{%- if value != None -%}
+export ETCDCTL_{{ key|string|upper }}='{{ value or "" }}'
+{% endif -%}
+{%- endfor -%}
+
+etcdctl member add {{ etcd.service.name }} --peer-urls="{{ etcd.service.config.listen_peer_urls }}"

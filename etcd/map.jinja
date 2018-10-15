@@ -40,6 +40,8 @@
 {% do etcd.service.update(current=current_peer) %}
 
 {%- if current_peer != None -%}
+    {%- do etcd.service.update({'name': current_peer.get('name',  current_id)}) -%}
+    {%- do etcd.service.update({'initial_cluster_state': current_peer.initial_cluster_state }) -%}
     {%- if etcd.service.config.get("listen_client_urls") == None -%}
         {%- do etcd.service.config.update({'listen_client_urls': current_peer.client_url }) -%}
     {%- endif -%}
@@ -63,6 +65,7 @@
             {% endif %}
         {% endfor %}
         {% do etcd.service.config.update({'initial_cluster': initial_cluster | join(',')}) %}
+        {% do etcd.service.update({'endpoints': endpoints}) %}
 
         {%- if etcd.etcdctl.get("endpoints") == None -%}
             {% do etcd.etcdctl.update({'endpoints': endpoints | join(',')}) %}

@@ -47,6 +47,7 @@ etcd:
 
     cluster: {}
     peers: []
+    endpoints: []
 
     config:
       heartbeat_interval: 200
@@ -63,6 +64,7 @@ etcd:
       client_port: 2379
       service_port: 2380
       ssl: false
+      initial_cluster_state: 'new'
 
 
   etcdctl:
